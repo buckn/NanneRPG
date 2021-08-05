@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/buckn/NanneRPG#readme",
   "dependencies": {
-    "esbuild": "^0.12.18"
+    "esbuild": "^0.12.18",
+    "express": "^4.17.1"
   }
 }
