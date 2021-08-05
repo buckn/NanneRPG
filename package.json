@@ -4,7 +4,7 @@
   "description": "An rpg that uses banano for its in game currency",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/buckn/NanneRPG/issues"
   },
-  "homepage": "https://github.com/buckn/NanneRPG#readme"
+  "homepage": "https://github.com/buckn/NanneRPG#readme",
+  "dependencies": {
+    "esbuild": "^0.12.18"
+  }
 }
