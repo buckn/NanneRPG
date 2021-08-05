@@ -1,0 +1,19 @@
+{
+  "name": "nannerpg",
+  "version": "1.0.0",
+  "description": "An rpg that uses banano for its in game currency",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/buckn/NanneRPG.git"
+  },
+  "author": "buckn, cedric-h",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/buckn/NanneRPG/issues"
+  },
+  "homepage": "https://github.com/buckn/NanneRPG#readme"
+}
