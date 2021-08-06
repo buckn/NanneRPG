@@ -2,21 +2,6 @@
 
 var fs = require('fs');
 
-/* ts build process */
-
-//make build directory if needed
-if (!fs.existsSync('./build')){
-    fs.mkdirSync('./build');
-}
-
-//esbuild ts files to a single js file
-require('esbuild').buildSync({
-  entryPoints: ['./ts/main.ts'],
-  bundle: true,
-  minify: false,
-  outfile: './build/out.js',
-})
-
 /* express and socket.io startup */
 
 // Setup basic express server
@@ -47,9 +32,10 @@ io.on('connection', (socket) => {
   socket.on('new message', (data) => {
     // we tell the client to execute 'new message'
     socket.broadcast.emit('new message', {
-      username: socket.username,
-      message: data
+      username: data.username,
+      message: data.message
     });
+    console.log('message!');
   });
 
   // when the client emits 'add user', this listens and executes
@@ -67,20 +53,6 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('user joined', {
       username: socket.username,
       numUsers: numUsers
-    });
-  });
-
-  // when the client emits 'typing', we broadcast it to others
-  socket.on('typing', () => {
-    socket.broadcast.emit('typing', {
-      username: socket.username
-    });
-  });
-
-  // when the client emits 'stop typing', we broadcast it to others
-  socket.on('stop typing', () => {
-    socket.broadcast.emit('stop typing', {
-      username: socket.username
     });
   });
 
