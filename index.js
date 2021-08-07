@@ -34,16 +34,7 @@ app.use(express.static(path.join(__dirname, 'css')));
 
 // Game Room
 
-let numUsers = 0;
 let loggedInUsers = [];
-
-function new_account(user, pass) {
-  fs.readFile('~/accounts.json', (err, data) => {
-      if (err) throw err;
-      let student = JSON.parse(data);
-      console.log(student);
-  });
-}
 
 io.on('connection', (socket) => {
   let addedUser = false;
@@ -68,24 +59,13 @@ io.on('connection', (socket) => {
 
     // we store the username in the socket session for this client
     socket.username = username;
-    ++numUsers;
     addedUser = true;
-    socket.emit('login', {
-      numUsers: numUsers
-    });
-    // echo globally (all clients) that a person has connected
-    socket.broadcast.emit('user joined', {
-      username: socket.username,
-      numUsers: numUsers
-    });
   });
 
   // when the user disconnects.. perform this
   socket.on('disconnect', () => {
     if (addedUser) {
-      --numUsers;
-
-      for (let i = 0; i <loggedInUsers.length; i++) {
+      for (let i = 0; i < loggedInUsers.length; i++) {
         if (loggedInUsers[i].username == socket.username) {
           delete loggedInUsers[i];
         }
@@ -99,20 +79,10 @@ io.on('connection', (socket) => {
     }
   });
 
-  socket.on('new account', (data) => {
-    fs.readFile('~/accounts.json', (err, data) => {
-      if (err) throw err;
-      let accounts = JSON.parse(data);
-      if (isArray(accounts.accounts)) {
-
-      }
-      accounts.accounts.p
-    });
-  });
-
   socket.on('login user', (data) => {
+    console.log('user logging in');
     let correct = false;
-    fs.readFile('~/accounts.json', (err, data) => {
+    fs.readFile('/tmp/accounts.json', (err, data) => {
       if (err) throw err;
       let accounts = JSON.parse(data);
       for (let i = 0; i < accounts.accounts.length; i++) {
@@ -122,8 +92,46 @@ io.on('connection', (socket) => {
       }
     });
     if (correct) {
-      loggedInUsers.push(data.username)
+      if (addedUser) return;
+      loggedInUsers.push(data.username);
+      addedUser = true;
     }
     loggedIn = true;
+    console.log('emitting login');
+    socket.emit('login', { numUsers: loggedInUsers.length })
+    console.log('user logged in');
+  });
+
+  socket.on('register user', (data) => {
+    fs.readFile('/tmp/accounts.json', (err, dataF) => {
+      if (err) throw err;
+      let accounts = JSON.parse(dataF);
+      if (!Array.isArray(accounts.accounts)) {
+        accounts.accounts = []
+      } else {
+        let alreadyUsed = false;
+        for (let i = 0; i < accounts.accounts.length; i++) {
+          if (accounts.accounts[i].username == data.username) {
+            alreadyUsed = true;
+          }
+        }
+        if (alreadyUsed) {
+          accounts.accounts.push({ username: data.username, password: data.password });
+        }
+      }
+      fs.writeFile('/tmp/accounts.json', JSON.stringify(accounts), 'utf8', (err) => {
+        if (err) {
+          console.log(`Error writing file: ${err}`);
+        } else {
+          console.log(`File is written successfully!`);
+          if (addedUser) return;
+          loggedInUsers.push(data.username);
+          addedUser = true;
+          loggedIn = true;
+          console.log('emitting login');
+          socket.broadcast.emit('login', { numUsers: loggedInUsers.length });
+        }
+      });
+    });
   });
 });
