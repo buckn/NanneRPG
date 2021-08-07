@@ -2,6 +2,17 @@
 
 var fs = require('fs');
 
+/* Parse Arguements */
+
+let port_num;
+
+process.argv.forEach((val, index) => {
+  if (index == 2) {
+    console.log(val);
+    port_num = val;
+  }
+})
+
 /* express and socket.io startup */
 
 // Setup basic express server
@@ -10,7 +21,7 @@ const app = express();
 const path = require('path');
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || parseInt(port_num);
 
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
