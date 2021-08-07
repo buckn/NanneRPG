@@ -32,15 +32,28 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.use(express.static(path.join(__dirname, 'html')));
 app.use(express.static(path.join(__dirname, 'css')));
 
-// Chatroom
+// Game Room
 
 let numUsers = 0;
+let loggedInUsers = [];
+
+function new_account(user, pass) {
+  fs.readFile('~/accounts.json', (err, data) => {
+      if (err) throw err;
+      let student = JSON.parse(data);
+      console.log(student);
+  });
+}
 
 io.on('connection', (socket) => {
   let addedUser = false;
+  let loggedIn = false;
 
   // when the client emits 'new message', this listens and executes
   socket.on('new message', (data) => {
+    if (!loggedIn) {
+      return;
+    }
     // we tell the client to execute 'new message'
     socket.broadcast.emit('new message', {
       username: data.username,
@@ -72,11 +85,45 @@ io.on('connection', (socket) => {
     if (addedUser) {
       --numUsers;
 
+      for (let i = 0; i <loggedInUsers.length; i++) {
+        if (loggedInUsers[i].username == socket.username) {
+          delete loggedInUsers[i];
+        }
+      }
+
       // echo globally that this client has left
       socket.broadcast.emit('user left', {
         username: socket.username,
         numUsers: numUsers
       });
     }
+  });
+
+  socket.on('new account', (data) => {
+    fs.readFile('~/accounts.json', (err, data) => {
+      if (err) throw err;
+      let accounts = JSON.parse(data);
+      if (isArray(accounts.accounts)) {
+
+      }
+      accounts.accounts.p
+    });
+  });
+
+  socket.on('login user', (data) => {
+    let correct = false;
+    fs.readFile('~/accounts.json', (err, data) => {
+      if (err) throw err;
+      let accounts = JSON.parse(data);
+      for (let i = 0; i < accounts.accounts.length; i++) {
+        if (accounts.accounts[i].username == data.username) {
+          correct = accounts.accounts[i].password == data.password;
+        }
+      }
+    });
+    if (correct) {
+      loggedInUsers.push(data.username)
+    }
+    loggedIn = true;
   });
 });

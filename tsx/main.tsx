@@ -28,12 +28,12 @@ function page() {
   const content_shell = (
   <div className="msgarea">
     <label>Name:</label><input type="text" id="name" name="name" size="10"></input><br></br>
-    <ul id="messages">
+    <ul id="messages" className="messages">
       {state.messages.map((message) => (
           <li>{message.user}: {message.text}</li>
         ))}
     </ul><br></br>
-    <label>Message:</label><input type="text" id="msgbx" name="name" size="10"></input><button id="msgbtn" onClick={send}>Send Message</button>
+    <div className="messagebar"><label>Message:</label><input type="text" id="msgbx" name="name" size="10"></input><button id="msgbtn" onClick={send}>Send</button></div>
   </div>);
 
   ReactDOM.render(content_shell, contentDOM);

@@ -3,9 +3,28 @@
 */
 
 .msgarea {
+  height: 34%;
+  width: 34%;
+  position: fixed;
+  bottom: 5px;
+  left: 5px;
+  margin: 5px;
+  padding: 5px;
+  overflow-y: scroll;
+}
+
+.messages {
+  margin: 0;
+  padding: 0;
+  overflow: scroll;
+}
+
+.messagebar {
   position: fixed;
   bottom: 0px;
   left: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
 .sent {
