@@ -30,6 +30,9 @@ jobs:
         
       - name: Install
         run: npm install
+
+      - name: Install Further Deps
+        run: npm install esbuild react react-dom typescript
         
       - name: TSC & ESBuild
         run: npx tsc --jsx react --noEmit tsx/* && esbuild tsx/* --bundle --outdir=build
