@@ -10,40 +10,51 @@ console.log('TS hello world!');
 
 const socket = io();
 
-const contentDOM = document.getElementById('content');
-
-const content_shell = (
-  <div>
-    <label>Name:</label><input type="text" id="name" name="name" size="10"></input><br></br>
-    <ul id="messages"></ul><br></br>
-    <label>Message:</label><input type="text" id="msgbx" name="name" size="10"></input><button id="msgbtn" onclick="send()">Send Message</button>
-  </div>);
-
-ReactDOM.render(content_shell, contentDOM);
-
-//Function that logs
-function log(text: string) {
-  document.getElementById("messages")!.appendChild(document.createElement("LI").appendChild(document.createTextNode(text)));
-  document.getElementById("messages")!.appendChild(document.createElement("BR"));
-}
-//Function that makes a sent message
-function sent(user: string, text: string) {
-  document.getElementById("messages")!.appendChild(document.createElement("LI").appendChild(document.createTextNode(user + ': ' + text)));
-  document.getElementById("messages")!.appendChild(document.createElement("BR"));
-}
-//Function that makes a received message
-function received(user: string, text: string) {
-  document.getElementById("messages")!.appendChild(document.createElement("LI").appendChild(document.createTextNode(user + ': ' + text)));
-  document.getElementById("messages")!.appendChild(document.createElement("BR"));
-}
-
-//send message
-(document.getElementById("msgbtn")!  as HTMLInputElement).onclick = function () {
+function send() {
   socket.emit('new message', {
     username: (document.getElementById('name') as HTMLInputElement).value,
     message: (document.getElementById('msgbx') as HTMLInputElement).value
   });
-  sent((document.getElementById('name') as HTMLInputElement).value, (document.getElementById('msgbx') as HTMLInputElement).value)
+  state.messages.push({ user: "you", text: (document.getElementById('msgbx') as HTMLInputElement).value });
+}
+
+const contentDOM = document.getElementById('content');
+
+let state = {
+  messages: []
+}
+
+function page() {
+  const content_shell = (
+  <div>
+    <label>Name:</label><input type="text" id="name" name="name" size="10"></input><br></br>
+    <ul id="messages">
+      {state.messages.map((message) => (
+          <li>{message.user}: {message.text}</li>
+        ))}
+    </ul><br></br>
+    <label>Message:</label><input type="text" id="msgbx" name="name" size="10"></input><button id="msgbtn" onClick={send}>Send Message</button>
+  </div>);
+
+  ReactDOM.render(content_shell, contentDOM);
+}
+
+setInterval(page, 100);
+
+//Function that logs
+function log(textI: string) {
+  state.messages.push({ user: "log", text: textI });
+}
+//Function that makes a sent message
+function sent(userI: string, textI: string) {
+  state.messages.push({ user: userI, text: textI });
+}
+//Function that makes a received message
+function received(userI: string, textI: string) {
+  if (userI == (document.getElementById('name') as HTMLInputElement).value) {
+    return;
+  }
+  state.messages.push({ user: userI, text: textI });
 }
 
 // Whenever the server emits 'login', log the login message
