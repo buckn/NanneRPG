@@ -26,7 +26,7 @@ let state = {
 
 function page() {
   const content_shell = (
-  <div>
+  <div className="msgarea">
     <label>Name:</label><input type="text" id="name" name="name" size="10"></input><br></br>
     <ul id="messages">
       {state.messages.map((message) => (

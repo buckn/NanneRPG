@@ -2,7 +2,11 @@
     Global Chat CSS
 */
 
-/* Fix user-agent */
+.msgarea {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+}
 
 .sent {
   color: lightblue;
