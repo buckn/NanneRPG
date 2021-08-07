@@ -1,8 +1,25 @@
 import io from "socket.io-client";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 
 console.log('TS hello world!');
 
+/* 
+    react components 
+*/
+
 const socket = io();
+
+const contentDOM = document.getElementById('content');
+
+const content_shell = (
+  <div>
+    <label>Name:</label><input type="text" id="name" name="name" size="10"></input><br></br>
+    <ul id="messages"></ul><br></br>
+    <label>Message:</label><input type="text" id="msgbx" name="name" size="10"></input><button id="msgbtn" onclick="send()">Send Message</button>
+  </div>);
+
+ReactDOM.render(content_shell, contentDOM);
 
 //Function that logs
 function log(text: string) {
