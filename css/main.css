@@ -46,7 +46,7 @@ input[type=text],input[type=password],input[type=submit]{
   height: 34%;
   width: 34%;
   position: fixed;
-  bottom: 5px;
+  bottom: 10%;
   left: 5px;
   margin: 5px;
   padding: 5px;

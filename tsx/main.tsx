@@ -40,6 +40,8 @@ const contentDOM = document.getElementById('content');
 
 let state = {
   messages: [],
+  msg_num: 0,
+  frame: 0,
   overlay: true
 }
 
@@ -59,7 +61,7 @@ function page() {
         <div className="msgarea">
         <ul id="messages" className="messages">
           {state.messages.map((message) => (
-            <li>{message.user}: {message.text}</li>
+            <li key={message.user + message.text + state.msg_num.toString() + state.frame.toString() + state.messages.length.toString() + Math.random().toString()}>{message.user}: {message.text}</li>
           ))}
         </ul><br></br>
         <div className="messagebar"><label>Message:</label><input type="text" id="msgbx" name="name" size="10"></input><button id="msgbtn" onClick={send}>Send</button></div>
@@ -71,6 +73,8 @@ function page() {
   if (!state.overlay) {
     document.getElementById("overlay").style.display = "none";
   }
+
+  state.frame++;
 }
 
 setInterval(page, 100);
@@ -78,10 +82,12 @@ setInterval(page, 100);
 //Function that logs
 function log(textI: string) {
   state.messages.push({ user: "log", text: textI });
+  state.msg_num++;
 }
 //Function that makes a sent message
 function sent(userI: string, textI: string) {
   state.messages.push({ user: userI, text: textI });
+  state.msg_num++;
 }
 //Function that makes a received message
 function received(userI: string, textI: string) {
@@ -89,6 +95,7 @@ function received(userI: string, textI: string) {
     return;
   }
   state.messages.push({ user: userI, text: textI });
+  state.msg_num++;
 }
 
 // Whenever the server emits 'login', log the login message

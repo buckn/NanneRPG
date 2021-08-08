@@ -53,15 +53,6 @@ io.on('connection', (socket) => {
     console.log('message!');
   });
 
-  // when the client emits 'add user', this listens and executes
-  socket.on('add user', (username) => {
-    if (addedUser) return;
-
-    // we store the username in the socket session for this client
-    socket.username = username;
-    addedUser = true;
-  });
-
   // when the user disconnects.. perform this
   socket.on('disconnect', () => {
     if (addedUser) {
@@ -70,12 +61,6 @@ io.on('connection', (socket) => {
           delete loggedInUsers[i];
         }
       }
-
-      // echo globally that this client has left
-      socket.broadcast.emit('user left', {
-        username: socket.username,
-        numUsers: numUsers
-      });
     }
   });
 
@@ -87,7 +72,7 @@ io.on('connection', (socket) => {
       let accounts = JSON.parse(data);
       for (let i = 0; i < accounts.accounts.length; i++) {
         if (accounts.accounts[i].username == data.username) {
-          correct = accounts.accounts[i].password == data.password;
+          correct = correct || accounts.accounts[i].password == data.password;
         }
       }
     });
@@ -97,7 +82,7 @@ io.on('connection', (socket) => {
       addedUser = true;
     }
     loggedIn = true;
-    console.log('emitting login');
+    console.log('emitting login ' + loggedInUsers);
     socket.emit('login', { numUsers: loggedInUsers.length })
     console.log('user logged in');
   });
