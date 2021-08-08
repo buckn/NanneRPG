@@ -2,7 +2,7 @@
   "name": "nannerpg",
   "version": "1.0.0",
   "description": "An rpg that uses banano for its in game currency",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "node ."
   },
