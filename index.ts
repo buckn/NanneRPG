@@ -24,7 +24,7 @@ const io = require('socket.io')(server);
 const port = process.env.PORT || parseInt(port_num);
 
 server.listen(port, () => {
-  console.log('Server listening at port %d', port);
+    console.log('Server listening at port %d', port);
 });
 
 // Routing
@@ -34,7 +34,10 @@ app.use(express.static(path.join(__dirname, 'css')));
 
 // Game Room
 
-let loggedInUsers = [];
+let state = {
+  loggedInUsers: [],
+  messageLog: []
+};
 
 io.on('connection', (socket) => {
   let addedUser = false;
@@ -51,14 +54,15 @@ io.on('connection', (socket) => {
       message: data.message
     });
     console.log('message!');
+    state.messageLog.push({ username: data.username, message: data.message });
   });
 
   // when the user disconnects.. perform this
   socket.on('disconnect', () => {
     if (addedUser) {
-      for (let i = 0; i < loggedInUsers.length; i++) {
-        if (loggedInUsers[i].username == socket.username) {
-          delete loggedInUsers[i];
+      for (let i = 0; i < state.loggedInUsers.length; i++) {
+        if (state.loggedInUsers[i].username == socket.username) {
+          delete state.loggedInUsers[i];
         }
       }
     }
@@ -82,8 +86,8 @@ io.on('connection', (socket) => {
       addedUser = true;
     }
     loggedIn = true;
-    console.log('emitting login ' + loggedInUsers);
-    socket.emit('login', { numUsers: loggedInUsers.length })
+    console.log('emitting login ' + state.loggedInUsers.length);
+    socket.emit('login', { numUsers: state.loggedInUsers.length, messages: state.messageLog.slice(Math.max(state.messageLog.length - 100, 0)) })
     console.log('user logged in');
   });
 
@@ -110,11 +114,11 @@ io.on('connection', (socket) => {
         } else {
           console.log(`File is written successfully!`);
           if (addedUser) return;
-          loggedInUsers.push(data.username);
+          state.loggedInUsers.push(data.username);
           addedUser = true;
           loggedIn = true;
           console.log('emitting login');
-          socket.broadcast.emit('login', { numUsers: loggedInUsers.length });
+          socket.broadcast.emit('login', { numUsers: state.loggedInUsers.length });
         }
       });
     });

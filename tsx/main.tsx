@@ -15,7 +15,7 @@ function send() {
     username: (document.getElementById('username') as HTMLInputElement).value,
     message: (document.getElementById('msgbx') as HTMLInputElement).value
   });
-  state.messages.push({ user: "you", text: (document.getElementById('msgbx') as HTMLInputElement).value });
+  state.messages.push({ username: "you", message: (document.getElementById('msgbx') as HTMLInputElement).value });
 }
 
 function login() {
@@ -61,7 +61,7 @@ function page() {
         <div className="msgarea">
         <ul id="messages" className="messages">
           {state.messages.map((message) => (
-            <li key={message.user + message.text + state.msg_num.toString() + state.frame.toString() + state.messages.length.toString() + Math.random().toString()}>{message.user}: {message.text}</li>
+            <li key={message.username + message.message + state.msg_num.toString() + state.frame.toString() + state.messages.length.toString() + Math.random().toString()}>{message.username}: {message.message}</li>
           ))}
         </ul><br></br>
         <div className="messagebar"><label>Message:</label><input type="text" id="msgbx" name="name" size="10"></input><button id="msgbtn" onClick={send}>Send</button></div>
@@ -81,12 +81,12 @@ setInterval(page, 100);
 
 //Function that logs
 function log(textI: string) {
-  state.messages.push({ user: "log", text: textI });
+  state.messages.push({ username: "log", message: textI });
   state.msg_num++;
 }
 //Function that makes a sent message
 function sent(userI: string, textI: string) {
-  state.messages.push({ user: userI, text: textI });
+  state.messages.push({ username: userI, message: textI });
   state.msg_num++;
 }
 //Function that makes a received message
@@ -94,7 +94,7 @@ function received(userI: string, textI: string) {
   if (userI == (document.getElementById('username') as HTMLInputElement).value) {
     return;
   }
-  state.messages.push({ user: userI, text: textI });
+  state.messages.push({ username: userI, message: textI });
   state.msg_num++;
 }
 
@@ -104,6 +104,10 @@ socket.on('login', (data) => {
   log('Welcome!');
   log('There are ' + data.numUsers + ' Users!');
   state.overlay = false;
+
+  console.log(data.messages);
+
+  state.messages = data.messages.concat(state.messages);
 });
 
 // Whenever the server emits 'new message', update the chat body
