@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
     }
     loggedIn = true;
     console.log('emitting login ' + state.loggedInUsers.length);
-    socket.emit('login', { numUsers: state.loggedInUsers.length, messages: state.messageLog.slice(Math.max(state.messageLog.length - 100, 0)) })
+    socket.emit('login', { numUsers: state.loggedInUsers.length, messages: state.messageLog.slice(Math.max(state.messageLog.length - 100, 0)) });
     console.log('user logged in');
   });
 
@@ -118,7 +118,7 @@ io.on('connection', (socket) => {
           addedUser = true;
           loggedIn = true;
           console.log('emitting login');
-          socket.broadcast.emit('login', { numUsers: state.loggedInUsers.length });
+          socket.emit('login', { numUsers: state.loggedInUsers.length, messages: state.messageLog.slice(Math.max(state.messageLog.length - 100, 0)) });
         }
       });
     });

@@ -56,7 +56,6 @@ input[type=text],input[type=password],input[type=submit]{
 .messages {
   margin: 0;
   padding: 0;
-  overflow: scroll;
 }
 
 .messagebar {
