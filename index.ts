@@ -4,14 +4,7 @@ var fs = require('fs');
 
 /* Parse Arguements */
 
-let port_num;
-
-process.argv.forEach((val, index) => {
-  if (index == 2) {
-    console.log(val);
-    port_num = val;
-  }
-})
+const port_num = process.argv[2];
 
 /* express and socket.io startup */
 
